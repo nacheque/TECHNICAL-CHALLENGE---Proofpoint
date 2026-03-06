@@ -6,7 +6,8 @@ df = pd.read_csv("input.csv")
 def normalize_data(df):
     #Series Name, Season Number, Episode Number, Episode Title y Air Date
     # eliminar registros sin nombre serie
-    df = df.dropna(subset=['SeriesName'])
+    # nota: Agregamos .copy() para evitar el SettingWithCopyWarning
+    df = df.dropna(subset=['SeriesName']).copy()
 
     # Quitar espacios extra y normalizar mayúsculas 
     df['SeriesName'] = df['SeriesName'].str.strip().str.title()
@@ -25,6 +26,8 @@ def normalize_data(df):
 
     #Air Date If missing, empty, or invalid → replace with "Unknown"
     df['AirDate'] = pd.to_datetime(df['AirDate'], errors='coerce')
+    #nota: Agregamos astype(object) para evitar el FutureWarning
+    df['AirDate'] = df['AirDate'].astype(object)
     df.loc[df['AirDate'].isna(), 'AirDate'] = 'Unknown'
 
     #When Episode Number, Episode Title and Air Date are missing (the three fields), discard the record
