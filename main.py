@@ -1,4 +1,3 @@
-from flask import Flask
 import pandas as pd
 
 def normalize_data(df):
@@ -41,13 +40,13 @@ def normalize_data(df):
 
 def remove_duplicates(df):
 
-    #creamos columnas temporales para comparar
+    #creamos columnas temporales para comparar, y estandarizamos los campos que tienen texto
     #los replace() usan expresiones regulares que eliminan los espacios al medio entre titulos y los pasa a minuscula
     df['Series_norm'] = df['SeriesName'].str.strip().str.replace(r'\s+', ' ', regex=True).str.lower()
     df['Title_norm'] = df['EpisodeTitle'].str.strip().str.replace(r'\s+', ' ', regex=True).str.lower()
 
     #consignas de prioridad para elegir el mejor registro
-    #las agregamos en columnas temporales para ver que condiciones cumple cada registro
+    #las agregamos en columnas temporales para ver que registros estan mas completos (tienen mas prioridad)
     df['has_date'] = df['AirDate'] != 'Unknown'
     df['has_title'] = df['EpisodeTitle'] != 'Untitled Episode'
     df['has_numbers'] = (df['SeasonNumber'] > 0) & (df['EpisodeNumber'] > 0)
@@ -78,8 +77,58 @@ def remove_duplicates(df):
 
     return df
 
+def generate_quality_report(df_inicial, df_normalizado, df_final):
+    total_input = len(df_inicial)
+    total_output = len(df_final)
+    discarded_entries = len(df_inicial) - len(df_normalizado)
+    duplicates_detected = len(df_normalizado) - len(df_final)
 
-df = pd.read_csv("input.csv")
-df = normalize_data(df)
-df = remove_duplicates(df)
-print(df)
+    #control de los registros que tuvieron que ser corregidos
+    correcciones = (
+        (df_normalizado['SeasonNumber'] == 0) |
+        (df_normalizado['EpisodeNumber'] == 0) |
+        (df_normalizado['EpisodeTitle'] == 'Untitled Episode') |
+        (df_normalizado['AirDate'] == 'Unknown')
+    )
+    #el sum() cuenta cuantos True encontro en las correciones
+    corrected_entries = correcciones.sum()
+
+    #creacion de las especificaciones del markdown
+    estrategia = """
+1. **Normalización de Textos:** Se crearon columnas temporales estandarizadas (minúsculas y colapso de espacios múltiples) para comparar cadenas de texto de forma precisa.
+2. **Priorización:** Se evaluó la calidad de cada registro (presencia de fechas reales, títulos válidos y números mayores a 0). Se ordenó el DataFrame de manera descendente para empujar los registros más completos a la parte superior.
+3. **Detección y Eliminación:** Se utilizó `df.duplicated(keep='first')` evaluando 3 escenarios: coincidencia exacta de llaves, y coincidencias donde faltaba la temporada o el episodio. Al mantener el primer registro ('first'), se garantizó la supervivencia del registro con mejor calidad de datos.
+"""
+
+    reporte_md = f"""# Data Quality Report
+
+## Metrics
+* **Total number of input records:** {total_input}
+* **Total number of output records:** {total_output}
+* **Number of discarded entries:** {discarded_entries}
+* **Number of corrected entries:** {corrected_entries}
+* **Number of duplicates detected:** {duplicates_detected}
+
+## Deduplication Strategy
+{estrategia}
+"""
+
+    with open('report.md', 'w', encoding='utf-8') as file:
+        file.write(reporte_md)
+
+    print('Reporte generado con exito en report.md')
+    print(reporte_md)
+
+#empezamos leyendo el archivo de entrada
+df_inicial = pd.read_csv("input.csv")
+
+#normalizamos el cotenido del input segun los criterios asignados
+df_normalizado = normalize_data(df_inicial)
+
+#eliminamos registros duplicados
+df_final = remove_duplicates(df_normalizado)
+print(df_final)
+
+#Transformamos el dataframe a csv, y le quitamos la columna extra de indices
+df_final.to_csv('episodes_clean.csv', index=False)
+generate_quality_report(df_inicial, df_normalizado, df_final)
