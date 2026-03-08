@@ -1,0 +1,8 @@
+Python is a high-level, general-purpose programming language. 
+Its design philosophy emphasizes code readability with the use of significant indentation. 
+Python is dynamically typed and garbage-collected. 
+It supports multiple programming paradigms, including structured (particularly procedural), object-oriented, and functional programming. 
+Python is often described as a "batteries included" language due to its comprehensive standard library. 
+Python was created by Guido van Rossum, and first released in 1991. 
+The Python programming language is widely used for data analysis, machine learning, and web development. 
+Programming in Python is fun!
