@@ -47,3 +47,17 @@ Como segundo requerimiento, se desarrolló un script independiente (`word_freque
    ```bash
    python word_frequency.py
    ```
+
+# Estructura del repositorio
+📁 TECHNICAL-CHALLENGE---Proofpoint/
+ ├── 📁 B_Streaming_Service/
+ │    ├── main.py
+ │    ├── input.csv
+ │    └── episodes_clean.csv (y report.md)
+ ├── 📁 C_Words_Frecuency/
+ │    ├── word_frequency.py
+ │    └── input.txt
+ ├── README.md
+ ├── ANSWERS.md
+ ├── requirements.txt
+ └── .gitignore
