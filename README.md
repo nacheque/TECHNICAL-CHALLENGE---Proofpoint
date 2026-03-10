@@ -1,4 +1,4 @@
-# Parte 1: The Streaming Service’s Lost Episodes
+# Punto B: The Streaming Service’s Lost Episodes
 
 Este proyecto es una solución automatizada desarrollada en Python utilizando `pandas` para el procesamiento, limpieza y deduplicación de un catálogo de episodios de series de televisión.
 
@@ -32,7 +32,7 @@ El script principal toma un archivo CSV crudo con datos inconsistentes y aplica 
    python main.py
    ```
 
-# Parte 2: Análisis de Frecuencia de Palabras
+# Punto C: Análisis de Frecuencia de Palabras
 
 Como segundo requerimiento, se desarrolló un script independiente (`word_frequency.py`) que lee un archivo de texto plano y genera un ranking de las 10 palabras más utilizadas.
 
