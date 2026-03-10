@@ -1,3 +1,7 @@
+# Punto A: Preguntas
+
+Las preguntas provistas por el documento han sido respondidas en `ANSWERS.md` para mantener la organización del repositorio.
+
 # Punto B: The Streaming Service’s Lost Episodes
 
 Este proyecto es una solución automatizada desarrollada en Python utilizando `pandas` para el procesamiento, limpieza y deduplicación de un catálogo de episodios de series de televisión.
